@@ -3,8 +3,25 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 
-def concat_csv_files(folder_path):
-    csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv') and file.startswith('output')]
+# def concat_csv_files(folder_path):
+#     csv_files = [file for file in os.listdir(folder_path) if file.endswith('.csv') and file.startswith('output')]
+#
+#     if not csv_files:
+#         print("No CSV files found in the specified folder.")
+#         return None
+#
+#     dfs = []
+#
+#     for csv_file in csv_files:
+#         csv_path = os.path.join(folder_path, csv_file)
+#         df = pd.read_csv(csv_path)
+#         dfs.append(df)
+#
+#     concatenated_df = pd.concat(dfs, ignore_index=True)
+#     return concatenated_df
+
+def raw_json_files(output_dir):
+    csv_files = [file for file in os.listdir(output_dir) if file.endswith('.csv') and file.startswith('output')]
 
     if not csv_files:
         print("No CSV files found in the specified folder.")
@@ -13,12 +30,33 @@ def concat_csv_files(folder_path):
     dfs = []
 
     for csv_file in csv_files:
-        csv_path = os.path.join(folder_path, csv_file)
+        csv_path = os.path.join(output_dir, csv_file)
         df = pd.read_csv(csv_path)
         dfs.append(df)
 
-    concatenated_df = pd.concat(dfs, ignore_index=True)
-    return concatenated_df
+    json_files = pd.concat(dfs, ignore_index=True)
+
+    return json_files
+
+
+def raw_img_files(img_dir):
+
+
+    file_list = []
+
+    categories = ['0.정상', '2.해충', '3.충해']
+
+    for category in categories:
+        category_dir = os.path.join(img_dir, category)
+
+        if os.path.exists(category_dir) and os.path.isdir(category_dir):
+            img_files = [f for f in os.listdir(category_dir) if f.endswith('.jpg')]  # 확장자에 맞게 수정
+            for img_file in img_files:
+                file_list.append({'path': f"[T원천]11.토마토/{category}/" + img_file})
+
+    img_files = pd.DataFrame(file_list)
+
+    return img_files
 
 def augment_data(aug_dir, raw_data):
     file_list = os.listdir(aug_dir)
@@ -50,30 +88,39 @@ def split_data(data):
 
 def main():
     aug_dir = 'Z:\DATA\노지 작물 해충 진단 이미지\Training\[T원천]11.토마토\9.증강'
+    raw_dir = r"Z:\DATA\노지 작물 해충 진단 이미지\Training\[T원천]11.토마토"
     output_dir = '../Output'  # Replace with the path to your output folder
-    raw_data = concat_csv_files(output_dir)
-    print(raw_data['Class Value'].nunique())
-
-    raw_data = raw_data[(raw_data['Crop'] == 11)]
-    raw_data['class'] = raw_data['Folder'].str.split('_').str[1] # 정상, 해충, 충해
-    raw_data['root'] = '[T원천]' + raw_data['Folder'].str.split('_').str[0].str.split(']').str[1] # 08.오이, 11.토마토, 05.배추
-    raw_data['raw_path'] = raw_data['root'] + '/' + raw_data['class'] + '/' + raw_data['Image Filename']
-    raw_data['label'] = raw_data['Class Value'].copy().astype(int)
-    raw_data['raw_file'] = raw_data['Image Filename'].copy()
-
-    raw_data = raw_data[['raw_path', 'raw_file', 'label']]
-    aug_data = augment_data(aug_dir, raw_data)
+    # raw_data = concat_csv_files(output_dir)
+    raw_data = raw_img_files(raw_dir)
 
 
-    raw = raw_data[['raw_path', 'label']]
-    raw.columns = ['path', 'label']
-    aug = aug_data
-    aug.columns = ['path', 'label']
-    data = pd.concat([raw, aug])
+    print(raw_data.head())
+    print(raw_data.columns)
+    # print(raw_data['Class Value'].nunique())
+    #
+    # raw_data = raw_data[(raw_data['Crop'] == 11)]
+    # raw_data['class'] = raw_data['Folder'].str.split('_').str[1] # 정상, 해충, 충해
+    # raw_data['root'] = '[T원천]' + raw_data['Folder'].str.split('_').str[0].str.split(']').str[1] # 08.오이, 11.토마토, 05.배추
+    # raw_data['raw_path'] = raw_data['root'] + '/' + raw_data['class'] + '/' + raw_data['Image Filename']
+    # raw_data['label'] = raw_data['Class Value'].copy().astype(int)
+    # raw_data['raw_file'] = raw_data['Image Filename'].copy()
+    #
+    # raw_data = raw_data[['raw_path', 'raw_file', 'label']]
+    # aug_data = augment_data(aug_dir, raw_data)
+    #
+    #
+    # raw = raw_data[['raw_path', 'label']]
+    # raw.columns = ['path', 'label']
+    # aug = aug_data
+    # aug.columns = ['path', 'label']
+    # data = pd.concat([raw, aug])
+    #
+    #
+    # data.to_csv("test.csv", index=False)
 
 
     # train/test 데이터 생성
-    split_data(data)
+    # split_data(data)
 
 if __name__ == '__main__':
     main()

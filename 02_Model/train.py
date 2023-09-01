@@ -125,7 +125,7 @@ def run(model, train_loader, val_loader, model_name):
 def main():
     print(CFG['DEVICE'])
 
-    train_data = pd.read_csv("../Output/train_data.csv")
+    train_data = pd.read_csv("../Output/raw_train_data.csv")
 
     train, val = train_test_split(train_data, test_size=0.2, random_state=CFG['SEED'])
 
@@ -140,9 +140,9 @@ def main():
 
     # train
     # cnn
-    # run(cnn_model, train_loader, val_loader, model_name='cnn_aug')
+    run(cnn_model, train_loader, val_loader, model_name='cnn_raw')
     # vit
-    run(vit_model, train_loader, val_loader, model_name='vit_aug')
+    # run(vit_model, train_loader, val_loader, model_name='vit_raw')
 
 
 if __name__ == '__main__':

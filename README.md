@@ -2,7 +2,7 @@
 [AI Hub](https://www.aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=realm&dataSetSn=148) 제공 노지 작물 해충 진단 이미지
 
 토마토
-![img.png](img.png)
+![image](https://github.com/jungjae0/OpenCrop-Pests/assets/93760723/76c4c0f0-0d3f-43d7-955f-934083e5a8c4)
 
 vit-33(6m32s)
 ![image](https://github.com/jungjae0/OpenCrop-Pests/assets/93760723/b4895f1a-9207-444f-8c5b-ea42f17bc29a)

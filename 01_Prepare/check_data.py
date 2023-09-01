@@ -1,50 +1,34 @@
 import pandas as pd
+import os
+
+data_dir = "../Output"
+
+raw_train = pd.read_csv(os.path.join(data_dir, "raw_train_data.csv"))
+raw_test = pd.read_csv(os.path.join(data_dir, "raw_test_data.csv"))
+aug_train = pd.read_csv(os.path.join(data_dir, "aug_train_data.csv"))
+aug_test = pd.read_csv(os.path.join(data_dir, "aug_test_data.csv"))
+
+data_list = [raw_train, raw_test, aug_train, aug_test]
+
+# raw_train_counts = raw_train['label'].value_counts()
+# raw_test_counts = raw_test['label'].value_counts()
+# aug_train_counts = aug_train['label'].value_counts()
+# aug_test_counts = aug_test['label'].value_counts()
+
+value_counts_list = []
+data_len_list = []
+for data in data_list:
+    value_counts_list.append(data['label'].value_counts())
+    data_len_list.append(len(data))
 
 
-def check_len(crop):
-    data = pd.read_csv('../Output/concatenated_data.csv')
-
-    total = data[data['path'].str.contains(f'{crop}')]
-    categories = ['정상', '해충', '충해']
-
-    results = []
-
-    for category in categories:
-        filtered = total[total['path'].str.contains(category)]
-        results.append(len(filtered))
-
-    df = pd.DataFrame({
-        'crop': [crop],
-        '정상': [results[0]],
-        '해충': [results[1]],
-        '충해': [results[2]],
-        '전체': [len(total)]
-    })
-
-    return df
+info = pd.concat(value_counts_list, axis=1)
+info.columns = ['raw_train', 'raw_test', 'aug_train', 'aug_test']
+info.loc[5] = data_len_list
+info.index = ['정상', '알락수염노린재', '담배가루이', '꽃노랑총채벌레', '비단노린재', '데이터수']
 
 
-crops = ["오이", "배추", "토마토"]
-all_dfs = []
-
-for crop in crops:
-    crop_df = check_len(crop)
-    all_dfs.append(crop_df)
-
-# 모든 데이터프레임을 하나로 합칩니다.
-final_df = pd.concat(all_dfs, ignore_index=True)
-
-print(final_df)
-
-test = pd.read_csv('../Output/temp/test_data.csv')
-train = pd.read_csv('../Output/temp/train_data.csv')
+print(info)
 
 
-testcounts = test['label'].value_counts()
-traincounts = train['label'].value_counts()
 
-
-print("test")
-print(testcounts)
-print("train")
-print(traincounts)
