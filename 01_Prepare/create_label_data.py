@@ -84,10 +84,10 @@ def split_data(data, filename):
     train_features, test_features, train_target, test_target = train_test_split(features, target, test_size=0.2,
                                                                                 random_state=42)
     train_data = pd.concat([train_features, train_target], axis=1)
-    train_data.to_csv(f'../Output/{filename}_train_data.csv', index=False)
+    train_data.to_csv(f'../Output/{filename}_train_data.csv', index=False, encoding='cp949')
 
     test_data = pd.concat([test_features, test_target], axis=1)
-    test_data.to_csv(f'../Output/{filename}_test_data.csv', index=False)
+    test_data.to_csv(f'../Output/{filename}_test_data.csv', index=False, encoding='cp949')
 
 
 # def check_data():
@@ -109,7 +109,7 @@ def split_data(data, filename):
 
 
 def main():
-    img_dir = r"Z:\DATA\노지 작물 해충 진단 이미지\Training\[T원천]11.토마토"
+    img_dir = r"D:\DATA\노지 작물 해충 진단 이미지\Training\[T원천]11.토마토"
     aug_dir = os.path.join(img_dir, '9.증강')
 
     output_dir = '../Output'
@@ -122,6 +122,10 @@ def main():
     aug = aug_data
     aug.columns = ['path', 'label']
     all_data = pd.concat([raw, aug])
+
+    raw.to_csv(os.path.join(output_dir, 'raw_data.csv'), index=False)
+    aug.to_csv(os.path.join(output_dir, 'aug_data.csv'), index=False)
+    all_data.to_csv(os.path.join(output_dir, 'all_data.csv'), index=False)
 
     # train/test 데이터 생성
     split_data(raw, 'raw')
