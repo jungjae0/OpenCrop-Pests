@@ -96,7 +96,6 @@ def run(model, train_loader, val_loader, model_name):
     criterion = nn.CrossEntropyLoss()
 
     for epoch in range(CFG['EPOCHS']):
-        print(CFG['DEVICE'])
         # train
         train_epoch_loss, train_preds, train_actuals = train_fn(train_loader, model, criterion)
 
@@ -146,7 +145,7 @@ def main():
     # cnn
     # run(cnn_model, train_loader, val_loader, model_name='cnn_raw')
     # vit
-    run(vit_model, train_loader, val_loader, model_name='vit_aug')
+    run(vit_model, train_loader, val_loader, model_name='vit_aug_cache')
 
 
 if __name__ == '__main__':
